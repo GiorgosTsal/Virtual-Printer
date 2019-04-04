@@ -1,0 +1,8 @@
+C:\Users\user\Desktop\print\new\ActaPrinter\ActaPrinter\bin\Debug\Virtual Printer.exe
+C:\Users\user\Desktop\print\new\ActaPrinter\ActaPrinter\bin\Debug\Virtual Printer.pdb
+C:\Users\user\Desktop\print\new\ActaPrinter\ActaPrinter\obj\Debug\virtualPrinter.Form1.resources
+C:\Users\user\Desktop\print\new\ActaPrinter\ActaPrinter\obj\Debug\virtualPrinter.Properties.Resources.resources
+C:\Users\user\Desktop\print\new\ActaPrinter\ActaPrinter\obj\Debug\Virtual Printer.csproj.GenerateResource.cache
+C:\Users\user\Desktop\print\new\ActaPrinter\ActaPrinter\obj\Debug\Virtual Printer.csproj.CoreCompileInputs.cache
+C:\Users\user\Desktop\print\new\ActaPrinter\ActaPrinter\obj\Debug\Virtual Printer.exe
+C:\Users\user\Desktop\print\new\ActaPrinter\ActaPrinter\obj\Debug\Virtual Printer.pdb
