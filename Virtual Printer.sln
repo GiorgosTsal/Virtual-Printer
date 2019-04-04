@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
 VisualStudioVersion = 15.0.28307.421
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Virtual Printer", "ActaPrinter\Virtual Printer.csproj", "{76316DF3-1FED-431F-B5D4-3AE6B0482A80}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Virtual Printer", "VirtualPrinter\Virtual Printer.csproj", "{76316DF3-1FED-431F-B5D4-3AE6B0482A80}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
