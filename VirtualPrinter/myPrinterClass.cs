@@ -36,9 +36,9 @@ namespace virtualPrinter
             //  /f[file]	Species the Universal Naming Convention (UNC) path and name of the .inf file name or the output file name, depending on the task that you are performing. Use /F[file] to specify a dependent .inf file.
             //  /r[port]	Specifies the port name.
             //  /m[model]	Specifies the driver model name. (This value can be specified in the .inf file.)
-
+			Winspool.AddLocalPort(@"C:\MyLocalPort.txt");
             string arg;
-            arg = "printui.dll , PrintUIEntry /if /b " + "\"" + printerName + "\"" + @" /f C:\Windows\inf\ntprint.inf /r " + "\"" + "lpt1:" + "\"" + " /m " + "\"" + "Generic / Text Only" + "\""; //initial arg
+            arg = "printui.dll , PrintUIEntry /if /b " + "\"" + printerName + "\"" + @" /f C:\Windows\inf\ntprint.inf /r " + "\"" + @"C:\MyLocalPort.txt" + "\"" + " /m " + "\"" + "Generic / Text Only" + "\""; //initial arg
             ProcessStartInfo p = new ProcessStartInfo();
             p.FileName = "rundll32.exe";
             p.Arguments = arg;
@@ -102,7 +102,71 @@ namespace virtualPrinter
             throw new Exception("No network adapters with an IPv4 address in the system!");
         }
 
+	   public static class Winspool
+        {
+            [StructLayout(LayoutKind.Sequential)]
+            private class PRINTER_DEFAULTS
+            {
+                public string pDatatype;
+                public IntPtr pDevMode;
+                public int DesiredAccess;
+            }
 
+            [DllImport("winspool.drv", EntryPoint = "XcvDataW", SetLastError = true)]
+            private static extern bool XcvData(
+                IntPtr hXcv,
+                [MarshalAs(UnmanagedType.LPWStr)] string pszDataName,
+                IntPtr pInputData,
+                uint cbInputData,
+                IntPtr pOutputData,
+                uint cbOutputData,
+                out uint pcbOutputNeeded,
+                out uint pwdStatus);
+
+            [DllImport("winspool.drv", EntryPoint = "OpenPrinterA", SetLastError = true)]
+            private static extern int OpenPrinter(
+                string pPrinterName,
+                ref IntPtr phPrinter,
+                PRINTER_DEFAULTS pDefault);
+
+            [DllImport("winspool.drv", EntryPoint = "ClosePrinter")]
+            private static extern int ClosePrinter(IntPtr hPrinter);
+
+            public static int AddLocalPort(string portName)
+            {
+                PRINTER_DEFAULTS def = new PRINTER_DEFAULTS();
+
+                def.pDatatype = null;
+                def.pDevMode = IntPtr.Zero;
+                def.DesiredAccess = 1; //Server Access Administer
+
+                IntPtr hPrinter = IntPtr.Zero;
+
+                int n = OpenPrinter(",XcvMonitor Local Port", ref hPrinter, def);
+                if (n == 0)
+                    return Marshal.GetLastWin32Error();
+
+                if (!portName.EndsWith("\0"))
+                    portName += "\0"; // Must be a null terminated string
+
+                // Must get the size in bytes. Rememeber .NET strings are formed by 2-byte characters
+                uint size = (uint)(portName.Length * 2);
+
+                // Alloc memory in HGlobal to set the portName
+                IntPtr portPtr = Marshal.AllocHGlobal((int)size);
+                Marshal.Copy(portName.ToCharArray(), 0, portPtr, portName.Length);
+
+                uint needed; // Not that needed in fact...
+                uint xcvResult; // Will receive de result here
+
+                XcvData(hPrinter, "AddPort", portPtr, size, IntPtr.Zero, 0, out needed, out xcvResult);
+
+                ClosePrinter(hPrinter);
+                Marshal.FreeHGlobal(portPtr);
+
+                return (int)xcvResult;
+            }
+        }
 
     }
 }
